@@ -18,20 +18,26 @@ namespace TeaTime.Api
                 options.UseInMemoryDatabase("TeaTimeDb");
             });
 
+            // Add services to the container.
+            builder.Services.AddHttpClient();
+
             builder.Services.AddSingleton<OracleDbContext>();
             builder.Services.AddScoped<IStoresService, StoresService>();
             builder.Services.AddScoped<IOrdersService, OrdersService>();
 
-            if (builder.Environment.IsDevelopment())
-            {
-                builder.Services.AddScoped<IStoresRepository, InMemoryStoresRepository>();
-                builder.Services.AddScoped<IOrdersRepository, InMemoryOrdersRepository>();
-            }
-            else
-            {
-                builder.Services.AddScoped<IStoresRepository, OracleStoresRepository>();
-                builder.Services.AddScoped<IOrdersRepository, OracleOrdersRepository>();
-            }
+            builder.Services.AddScoped<IStoresRepository, ApiStoresRepository>();
+            builder.Services.AddScoped<IOrdersRepository, ApiOrdersRepository>();
+
+            //if (builder.Environment.IsDevelopment())
+            //{
+            //    builder.Services.AddScoped<IStoresRepository, InMemoryStoresRepository>();
+            //    builder.Services.AddScoped<IOrdersRepository, InMemoryOrdersRepository>();
+            //}
+            //else
+            //{
+            //    builder.Services.AddScoped<IStoresRepository, OracleStoresRepository>();
+            //    builder.Services.AddScoped<IOrdersRepository, OracleOrdersRepository>();
+            //}
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -51,7 +57,7 @@ namespace TeaTime.Api
 
             app.UseAuthorization();
 
-            app.UseMiddleware<ApiAuthMiddleware>();
+            //app.UseMiddleware<ApiAuthMiddleware>();
 
             app.MapControllers();
 
